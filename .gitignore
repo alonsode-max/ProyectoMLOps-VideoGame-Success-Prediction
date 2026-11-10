@@ -1,0 +1,33 @@
+# Entorno Virtual de Python
+venv/
+env/
+.venv/
+.env
+
+# Caché y archivos temporales de Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Archivos de Jupyter Notebook
+.ipynb_checkpoints/
+
+# Datos y Artefactos (evitar subir ficheros pesados a Git)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Artefactos de MLflow y Modelos (Módulo 2 / 3)
+mlruns/
+*.pkl
+*.joblib
+
+# IDEs
+.vscode/
+.idea/
+
+# Sistema Operativo
+.DS_Store
+Thumbs.db
