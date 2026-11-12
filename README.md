@@ -8,7 +8,7 @@ En la industria del videojuego independiente, el riesgo financiero no es simétr
 Por tanto, priorizamos la **Precisión** y la **Calibración del Umbral de Decisión** por encima del Recall puro.
 
 ### 2. Tarea y Métricas Elegidas
-* **Tarea:** Clasificación Binaria Supervisada ($1: \text{Global\_Sales} \ge 0.5\text{M}$).
+* **Tarea:** Clasificación Binaria Supervisada (Global_Sales >= 0.5M$).
 * **Métricas Principales:**
   * **ROC-AUC & PR-AUC:** Para evaluar la separación entre clases independientemente del umbral.
   * **Precision @ Umbral Conservador ($\ge 0.65$):** Métrica operativa para la toma de decisiones financieras.
