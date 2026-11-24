@@ -1,0 +1,12 @@
+{
+    "name": "vgsales-frontend",
+    "version": "1.0.0",
+    "description": "Frontend MLOps para predicción de viabilidad comercial de videojuegos",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "express": "^4.19.2"
+    }
+}

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hit Predictor | MLOps Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
+
+    <!-- Barra Superior -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-10">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div>
+                    <h1 class="text-lg font-bold tracking-tight text-white">Hit Predictor</h1>
+                    <p class="text-xs text-slate-400">Evaluación de Riesgo Comercial (&ge; 500k copias globales)</p>
+                </div>
+            </div>
+
+            <!-- Indicador en vivo de /health -->
+            <div id="api-status-badge"
+                class="flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium bg-slate-800 border border-slate-700 text-slate-300">
+                <span id="status-dot" class="w-2.5 h-2.5 bg-amber-400 animate-pulse"></span>
+                <span id="status-text">Comprobando API...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal -->
+    <main class="max-w-6xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Columna Izquierda (2/3): Formulario y Resultados -->
+        <div class="lg:col-span-2 space-y-6">
+
+            <!-- Tarjeta del Formulario -->
+            <section class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <h2 class="text-xl font-semibold text-white mb-1">Parámetros del Proyecto</h2>
+                <p class="text-sm text-slate-400 mb-6">
+                    Introduce las características del título para calcular su probabilidad de éxito bajo un umbral
+                    conservador del <span class="text-indigo-400 font-semibold">65%</span>.
+                </p>
+
+                <form id="predict-form" class="space-y-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <!-- Plataforma -->
+                        <div>
+                            <label for="platform" class="block text-sm font-medium text-slate-300 mb-1.5">Plataforma
+                                Principal</label>
+                            <select id="platform" name="Platform" required
+                                class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="PS4">PlayStation 4 (PS4)</option>
+                                <option value="XOne">Xbox One (XOne)</option>
+                                <option value="PC" selected>PC</option>
+                                <option value="3DS">Nintendo 3DS</option>
+                                <option value="WiiU">Nintendo Wii U</option>
+                                <option value="PS3">PlayStation 3 (PS3)</option>
+                                <option value="X360">Xbox 360 (X360)</option>
+                                <option value="Wii">Nintendo Wii</option>
+                                <option value="DS">Nintendo DS</option>
+                                <option value="PS2">PlayStation 2 (PS2)</option>
+                                <option value="Other">Otra Plataforma</option>
+                            </select>
+                        </div>
+
+                        <!-- Género -->
+                        <div>
+                            <label for="genre" class="block text-sm font-medium text-slate-300 mb-1.5">Género
+                                Principal</label>
+                            <select id="genre" name="Genre" required
+                                class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="Action">Action</option>
+                                <option value="Shooter">Shooter</option>
+                                <option value="Role-Playing">Role-Playing (RPG)</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Platform">Platform</option>
+                                <option value="Racing">Racing</option>
+                                <option value="Fighting">Fighting</option>
+                                <option value="Simulation">Simulation</option>
+                                <option value="Puzzle">Puzzle</option>
+                                <option value="Adventure">Adventure</option>
+                                <option value="Strategy">Strategy</option>
+                                <option value="Misc">Misc</option>
+                            </select>
+                        </div>
+
+                        <!-- Año de Lanzamiento -->
+                        <div>
+                            <label for="year" class="block text-sm font-medium text-slate-300 mb-1.5">Año de
+                                Lanzamiento</label>
+                            <input type="number" id="year" name="Year" min="1980" max="2026" value="2026" required
+                                class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+
+                        <!-- Publisher Predefinido -->
+                        <div>
+                            <label for="publisher-select"
+                                class="block text-sm font-medium text-slate-300 mb-1.5">Distribuidora /
+                                Publisher</label>
+                            <select id="publisher-select"
+                                class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="Indie_Studio">Estudio Independiente (Other)</option>
+                                <option value="Electronic Arts">Electronic Arts</option>
+                                <option value="Activision">Activision</option>
+                                <option value="Ubisoft">Ubisoft</option>
+                                <option value="Nintendo">Nintendo</option>
+                                <option value="Sony Computer Entertainment">Sony Computer Entertainment</option>
+                                <option value="Take-Two Interactive">Take-Two Interactive</option>
+                                <option value="Square Enix">Square Enix</option>
+                                <option value="Capcom">Capcom</option>
+                                <option value="Sega">Sega</option>
+                                <option value="505 Games">505 Games</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Publisher Personalizado -->
+                    <div>
+                        <label for="publisher-custom" class="block text-sm font-medium text-slate-300 mb-1.5">
+                            Nombre específico del Publisher <span class="text-slate-500 font-normal">(opcional,
+                                sobrescribe el selector)</span>
+                        </label>
+                        <input type="text" id="publisher-custom"
+                            placeholder="Ej: Devolver Digital, Team17, Annapurna..."
+                            class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                    </div>
+
+                    <button type="submit" id="submit-btn"
+                        class="w-full bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-xl transition duration-150 shadow-lg shadow-indigo-600/25 flex items-center justify-center gap-2">
+                        <span>Evaluar Viabilidad del Proyecto</span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- Alerta de Error (Oculta por defecto) -->
+            <div id="error-box"
+                class="hidden bg-rose-950/70 border border-rose-800 text-rose-200 px-5 py-4 rounded-2xl text-sm">
+                <p class="font-semibold mb-1">Error en la consulta</p>
+                <p id="error-message"></p>
+            </div>
+
+            <!-- Tarjeta de Resultado (Oculta por defecto) -->
+            <section id="result-card"
+                class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-6 fade-in">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                    <div>
+                        <span class="text-xs uppercase tracking-wider text-slate-400">Veredicto del Modelo</span>
+                        <h3 id="verdict-title" class="text-2xl font-bold mt-0.5"></h3>
+                    </div>
+                    <span id="verdict-badge" class="px-4 py-1.5 rounded-full text-sm font-bold"></span>
+                </div>
+
+                <!-- Métricas numéricas -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-800/60 border border-slate-700/70 rounded-xl p-4">
+                        <p class="text-xs text-slate-400">Probabilidad Estimada de Hit</p>
+                        <p id="prob-value" class="text-3xl font-extrabold text-white mt-1">0.0%</p>
+                    </div>
+                    <div class="bg-slate-800/60 border border-slate-700/70 rounded-xl p-4">
+                        <p class="text-xs text-slate-400">Umbral Conservador Exigido</p>
+                        <p id="threshold-value" class="text-3xl font-extrabold text-indigo-400 mt-1">65.0%</p>
+                    </div>
+                </div>
+
+                <!-- Barra de progreso con marca de umbral -->
+                <div>
+                    <div class="flex justify-between text-xs text-slate-400 mb-1.5">
+                        <span>0% (Fracaso)</span>
+                        <span class="text-indigo-400 font-medium">Corte de Seguridad (65%)</span>
+                        <span>100% (Hit Seguro)</span>
+                    </div>
+                    <div class="relative w-full h-4 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                        <div id="prob-bar" class="h-full transition-all duration-500 rounded-full" style="width: 0%">
+                        </div>
+                        <!-- Línea vertical marcando el 65% -->
+                        <div class="absolute top-0 bottom-0 w-0.5 bg-white shadow" style="left: 65%"></div>
+                    </div>
+                </div>
+
+                <!-- Recomendación de Negocio -->
+                <div id="recommendation-box" class="p-4 rounded-xl text-sm font-medium border"></div>
+
+                <!-- Inspector JSON para auditoría técnica -->
+                <details class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs">
+                    <summary class="cursor-pointer text-slate-400 hover:text-slate-200 font-medium">
+                        Inspeccionar Payload HTTP (Request / Response JSON)
+                    </summary>
+                    <pre id="json-inspector" class="mt-3 text-emerald-400 overflow-x-auto"></pre>
+                </details>
+            </section>
+        </div>
+
+        <!-- Columna Derecha (1/3): Contexto de Negocio y Limitaciones -->
+        <aside class="space-y-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <h3 class="text-base font-semibold text-white mb-3">Estrategia Anti-Quiebra</h3>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    Para un estudio independiente, financiar un proyecto sin retorno (Falso Positivo) compromete la
+                    supervivencia de la empresa.
+                </p>
+                <p class="text-sm text-slate-400 leading-relaxed mt-3">
+                    Por ello, el modelo LightGBM opera con un <span class="text-slate-200 font-medium">umbral calibrado
+                        al 65%</span>, priorizando la <span class="text-indigo-400 font-medium">Precisión</span> y
+                    filtrando proyectos con alto riesgo financiero.
+                </p>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <h3 class="text-base font-semibold text-amber-400 mb-3">Limitaciones del Modelo</h3>
+                <ul class="space-y-3 text-sm text-slate-400">
+                    <li class="flex gap-2.5">
+                        <span class="text-amber-400 font-bold">&bull;</span>
+                        <span><strong class="text-slate-200">Corte Temporal:</strong> Dataset histórico con registros
+                            consolidados hasta 2017.</span>
+                    </li>
+                    <li class="flex gap-2.5">
+                        <span class="text-amber-400 font-bold">&bull;</span>
+                        <span><strong class="text-slate-200">Sesgo de Distribución:</strong> Refleja principalmente
+                            ventas físicas tradicionales; no incluye métricas exclusivas de tiendas digitales modernas
+                            (Steam/eShop).</span>
+                    </li>
+                    <li class="flex gap-2.5">
+                        <span class="text-amber-400 font-bold">&bull;</span>
+                        <span><strong class="text-slate-200">Alcance:</strong> Herramienta de cribado inicial; debe
+                            complementarse con validación de comunidad y prototipado. Recordad que la decision humana es
+                            más importante.</span>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

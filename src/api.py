@@ -5,6 +5,7 @@ import pandas as pd
 from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel, Field, field_validator
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 # 1. CONSTANTES Y CONFIGURACIÓN
 MODEL_PATH = os.getenv("MODEL_PATH", "src/model.pkl")
@@ -87,8 +88,16 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# 6. INICIALIZACIÓN DE CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permite peticiones desde el frontend en localhost:3000
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-# 6. ENDPOINTS
+# 7. ENDPOINTS
 @app.get("/health", response_model=HealthResponse, status_code=status.HTTP_200_OK, tags=["Monitorización"])
 def health_check():
     """Endpoint de verificación de estado e integridad del servicio."""
